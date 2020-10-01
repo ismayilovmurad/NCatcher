@@ -1,17 +1,21 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+// Navigation
+apply plugin: "androidx.navigation.safeargs.kotlin"
+// Data Binding
+apply plugin: "kotlin-kapt"
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.martiandeveloper.numbercatcher"
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,16 +26,49 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildFeatures {
+        dataBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
+    // Default
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.1'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
+    // KTX
+    implementation "androidx.core:core-ktx:$ktx"
+    // AppCompat
+    implementation "androidx.appcompat:appcompat:$appcompat"
+    // ConstraintLayout
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    // Test
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test.ext:junit:$junit2"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    // Material
+    implementation "com.google.android.material:material:$material"
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle"
+    // Google Ads
+    implementation "com.google.android.gms:play-services-ads:$googleAds"
+    // Play core library for In-App review, In-App update
+    implementation "com.google.android.play:core:$playcore"
+    implementation "com.google.android.play:core-ktx:$playcorektx"
 }
