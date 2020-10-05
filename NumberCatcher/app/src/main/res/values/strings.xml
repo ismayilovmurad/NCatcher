@@ -8,5 +8,8 @@
 
 
     <string name="start">Start</string>
+    <string name="_continue">Continue</string>
+    <string name="home">Home</string>
+    <string name="_6">6</string>
 
 </resources>
