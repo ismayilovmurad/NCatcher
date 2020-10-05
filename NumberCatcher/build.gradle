@@ -39,6 +39,8 @@ buildscript {
         // Play core library for In-App Review
         playcore = "1.8.2"
         playcorektx = "1.8.1"
+        // Timber
+        timber = "4.7.1"
     }
 
     repositories {

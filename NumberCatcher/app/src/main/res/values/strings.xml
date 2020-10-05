@@ -1,3 +1,12 @@
-<resources>
-    <string name="app_name">Number Catcher</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="app_name" translatable="false">NCatcher</string>
+    <!--ca-app-pub-3036948542324685/3428661897-->
+    <!--ca-app-pub-3036948542324685/4308313506-->
+    <string name="main_banner" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="main_interstitial" translatable="false" tools:ignore="UnusedResources">ca-app-pub-3940256099942544/1033173712</string>
+
+
+    <string name="start">Start</string>
+
 </resources>
