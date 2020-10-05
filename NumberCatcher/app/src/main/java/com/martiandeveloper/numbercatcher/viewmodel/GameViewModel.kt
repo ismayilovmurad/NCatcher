@@ -18,6 +18,10 @@ class GameViewModel : ViewModel() {
     val currentPosition: LiveData<Int>
         get() = _currentPosition
 
+    private var _catchableNumber = MutableLiveData<Int>()
+    val catchableNumber: LiveData<Int>
+        get() = _catchableNumber
+
     fun onContinueMBTNClick() {
         _eventContinueMBTNClick.value = true
     }
@@ -34,8 +38,11 @@ class GameViewModel : ViewModel() {
         _eventHomeMBTNClick.value = false
     }
 
-    fun setCurrentPosition(position:Int){
+    fun setCurrentPosition(position: Int) {
         _currentPosition.value = position
     }
 
+    fun setCatchableNumber(number: Int) {
+        _catchableNumber.value = number
+    }
 }
