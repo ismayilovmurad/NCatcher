@@ -1,15 +1,15 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-
+<resources>
     <string name="app_name" translatable="false">NCatcher</string>
     <!--ca-app-pub-3036948542324685/3428661897-->
     <!--ca-app-pub-3036948542324685/4308313506-->
     <string name="main_banner" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="main_interstitial" translatable="false" tools:ignore="UnusedResources">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="main_interstitial" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
 
 
     <string name="start">Start</string>
     <string name="_continue">Continue</string>
     <string name="home">Home</string>
-    <string name="_6">6</string>
-
+    <string name="best_score">Best score: %d</string>
+    <string name="score">Score: %d</string>
+    <string name="try_again">Try again</string>
 </resources>

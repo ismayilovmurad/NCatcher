@@ -22,9 +22,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/aldrich"
-            android:text="@{String.valueOf(gameViewModel.score)}"
+            android:text="@{@string/score(gameViewModel.score)}"
             android:textColor="@color/colorAccent"
-            android:textSize="24sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,6 +63,7 @@
                     android:text="@{String.valueOf(gameViewModel.numbers.get(0))}"
                     android:textColor="@color/colorFour"
                     android:textSize="32sp"
+                    app:backgroundTint="@color/colorOne"
                     app:rippleColor="@color/colorTwo" />
 
                 <com.google.android.material.button.MaterialButton
@@ -75,6 +76,7 @@
                     android:text="@{String.valueOf(gameViewModel.numbers.get(1))}"
                     android:textColor="@color/colorFour"
                     android:textSize="32sp"
+                    app:backgroundTint="@color/colorOne"
                     app:rippleColor="@color/colorTwo" />
 
             </LinearLayout>
@@ -94,6 +96,7 @@
                     android:text="@{String.valueOf(gameViewModel.numbers.get(2))}"
                     android:textColor="@color/colorFour"
                     android:textSize="32sp"
+                    app:backgroundTint="@color/colorOne"
                     app:rippleColor="@color/colorTwo" />
 
                 <com.google.android.material.button.MaterialButton
@@ -106,11 +109,22 @@
                     android:text="@{String.valueOf(gameViewModel.numbers.get(3))}"
                     android:textColor="@color/colorFour"
                     android:textSize="32sp"
+                    app:backgroundTint="@color/colorOne"
                     app:rippleColor="@color/colorTwo" />
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/aldrich"
+            android:text="@{@string/best_score(gameViewModel.bestScore)}"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

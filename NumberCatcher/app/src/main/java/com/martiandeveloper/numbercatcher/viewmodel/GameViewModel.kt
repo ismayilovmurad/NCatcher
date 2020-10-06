@@ -1,6 +1,5 @@
 package com.martiandeveloper.numbercatcher.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,11 +46,24 @@ class GameViewModel : ViewModel() {
     val score: LiveData<Int>
         get() = _score
 
+    private var _bestScore = MutableLiveData<Int>()
+    val bestScore: LiveData<Int>
+        get() = _bestScore
+
+    private var _eventTryAgainMBTNClick = MutableLiveData<Boolean>()
+    val eventTryAgainMBTNClick: LiveData<Boolean>
+        get() = _eventTryAgainMBTNClick
+
+    private var _eventHome2MBTNClick = MutableLiveData<Boolean>()
+    val eventHome2MBTNClick: LiveData<Boolean>
+        get() = _eventHome2MBTNClick
+
 
     init {
         _catchableNumber.value = 6
         generateNumbers()
         _score.value = 0
+        _bestScore.value = 0
     }
 
     fun onContinueMBTNClick() {
@@ -139,5 +151,25 @@ class GameViewModel : ViewModel() {
 
     fun increaseScore() {
         _score.value = _score.value!!.plus(1)
+    }
+
+    fun setBestScore(score:Int){
+        _bestScore.value = score
+    }
+
+    fun onTryAgainMBTNClick() {
+        _eventTryAgainMBTNClick.value = true
+    }
+
+    fun onTryAgainMBTNClickComplete() {
+        _eventTryAgainMBTNClick.value = false
+    }
+
+    fun onHome2MBTNClick() {
+        _eventHome2MBTNClick.value = true
+    }
+
+    fun onHome2MBTNClickComplete() {
+        _eventHome2MBTNClick.value = false
     }
 }

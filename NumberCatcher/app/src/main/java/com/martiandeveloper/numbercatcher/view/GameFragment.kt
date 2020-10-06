@@ -1,12 +1,14 @@
 package com.martiandeveloper.numbercatcher.view
 
 import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -14,8 +16,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import com.martiandeveloper.numbercatcher.R
+import com.martiandeveloper.numbercatcher.databinding.DialogGameOverBinding
 import com.martiandeveloper.numbercatcher.databinding.DialogPauseBinding
 import com.martiandeveloper.numbercatcher.databinding.FragmentGameBinding
+import com.martiandeveloper.numbercatcher.utils.SCORE_KEY
+import com.martiandeveloper.numbercatcher.utils.SCORE_SHARED_PREFERENCES
 import com.martiandeveloper.numbercatcher.viewmodel.GameViewModel
 import timber.log.Timber
 
@@ -28,6 +33,8 @@ class GameFragment : Fragment() {
     private lateinit var mainBinding: FragmentGameBinding
 
     private lateinit var gameViewModel: GameViewModel
+
+    private lateinit var gameOverDialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +57,9 @@ class GameFragment : Fragment() {
         mediaPlayer = MediaPlayer.create(context, R.raw.music)
         setMusic()
         observe()
+        getBestScore()
+        pauseDialog = AlertDialog.Builder(context).create()
+        gameOverDialog = AlertDialog.Builder(context).create()
     }
 
     private fun getViewModel(): GameViewModel {
@@ -92,14 +102,20 @@ class GameFragment : Fragment() {
         gameViewModel.eventFirstNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
                 if (gameViewModel.numbers.value!![0] == gameViewModel.catchableNumber.value) {
-                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
                     gameViewModel.increaseScore()
+
+                    gameViewModel.generateCatchableNumber()
+                    gameViewModel.generateNumbers()
                 } else {
-                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
+                        saveScore()
+                    }
+
+                    showGameOverDialog()
+
+                    mediaPlayer.pause()
                 }
 
-                gameViewModel.generateCatchableNumber()
-                gameViewModel.generateNumbers()
                 gameViewModel.onFirstNumberMBTNClickComplete()
             }
         })
@@ -107,14 +123,20 @@ class GameFragment : Fragment() {
         gameViewModel.eventSecondNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
                 if (gameViewModel.numbers.value!![1] == gameViewModel.catchableNumber.value) {
-                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
                     gameViewModel.increaseScore()
+
+                    gameViewModel.generateCatchableNumber()
+                    gameViewModel.generateNumbers()
                 } else {
-                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
+                        saveScore()
+                    }
+
+                    showGameOverDialog()
+
+                    mediaPlayer.pause()
                 }
 
-                gameViewModel.generateCatchableNumber()
-                gameViewModel.generateNumbers()
                 gameViewModel.onSecondNumberMBTNClickComplete()
             }
         })
@@ -122,14 +144,20 @@ class GameFragment : Fragment() {
         gameViewModel.eventThirdNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
                 if (gameViewModel.numbers.value!![2] == gameViewModel.catchableNumber.value) {
-                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
                     gameViewModel.increaseScore()
+
+                    gameViewModel.generateCatchableNumber()
+                    gameViewModel.generateNumbers()
                 } else {
-                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
+                        saveScore()
+                    }
+
+                    showGameOverDialog()
+
+                    mediaPlayer.pause()
                 }
 
-                gameViewModel.generateCatchableNumber()
-                gameViewModel.generateNumbers()
                 gameViewModel.onThirdNumberMBTNClickComplete()
             }
         })
@@ -137,17 +165,59 @@ class GameFragment : Fragment() {
         gameViewModel.eventFourthNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
                 if (gameViewModel.numbers.value!![3] == gameViewModel.catchableNumber.value) {
-                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
                     gameViewModel.increaseScore()
+
+                    gameViewModel.generateCatchableNumber()
+                    gameViewModel.generateNumbers()
                 } else {
-                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
+                        saveScore()
+                    }
+
+                    showGameOverDialog()
+
+                    mediaPlayer.pause()
                 }
 
-                gameViewModel.generateCatchableNumber()
-                gameViewModel.generateNumbers()
                 gameViewModel.onFourthNumberMBTNClickComplete()
             }
         })
+
+        gameViewModel.eventTryAgainMBTNClick.observe(viewLifecycleOwner, {
+            if (it) {
+                gameOverDialog.dismiss()
+
+                navigate(GameFragmentDirections.actionGameFragmentSelf())
+
+                gameViewModel.onTryAgainMBTNClickComplete()
+            }
+        })
+
+        gameViewModel.eventHome2MBTNClick.observe(viewLifecycleOwner, {
+            if (it) {
+                gameOverDialog.dismiss()
+                navigate(GameFragmentDirections.actionGameFragmentToHomeFragment())
+                gameViewModel.onHome2MBTNClickComplete()
+            }
+        })
+    }
+
+    private fun getBestScore() {
+        val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences(
+            SCORE_SHARED_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
+        gameViewModel.setBestScore(sharedPreferences.getInt(SCORE_KEY, 0))
+    }
+
+    private fun saveScore() {
+        val sharedPreferences = requireContext().getSharedPreferences(
+            SCORE_SHARED_PREFERENCES,
+            AppCompatActivity.MODE_PRIVATE
+        )
+        val editor = sharedPreferences.edit()
+        editor.putInt(SCORE_KEY, gameViewModel.score.value!!)
+        editor.apply()
     }
 
     private fun navigate(navDirections: NavDirections) {
@@ -167,18 +237,13 @@ class GameFragment : Fragment() {
         if (gameViewModel.currentPosition.value == null) {
             mediaPlayer.start()
         } else {
-            try {
-                if (!pauseDialog.isShowing) {
-                    showPauseDialog()
-                }
-            } catch (e: Exception) {
+            if(!pauseDialog.isShowing && !gameOverDialog.isShowing){
                 showPauseDialog()
             }
         }
     }
 
     private fun showPauseDialog() {
-        pauseDialog = AlertDialog.Builder(context).create()
         val binding = DialogPauseBinding.inflate(LayoutInflater.from(context))
 
         binding.gameViewModel = gameViewModel
@@ -188,6 +253,18 @@ class GameFragment : Fragment() {
         pauseDialog.setCanceledOnTouchOutside(false)
         pauseDialog.setCancelable(false)
         pauseDialog.show()
+    }
+
+    private fun showGameOverDialog() {
+        val binding = DialogGameOverBinding.inflate(LayoutInflater.from(context))
+
+        binding.gameViewModel = gameViewModel
+        binding.lifecycleOwner = this
+
+        gameOverDialog.setView(binding.root)
+        gameOverDialog.setCanceledOnTouchOutside(false)
+        gameOverDialog.setCancelable(false)
+        gameOverDialog.show()
     }
 
 }

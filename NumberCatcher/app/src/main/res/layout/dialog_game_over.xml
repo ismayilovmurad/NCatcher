@@ -25,9 +25,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/aldrich"
-            android:text="@{String.valueOf(gameViewModel.catchableNumber)}"
-            android:textColor="@color/colorFour"
-            android:textSize="64sp" />
+            android:text="@{@string/score(gameViewModel.score)}"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/aldrich"
+            android:text="@{@string/best_score(gameViewModel.bestScore)}"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -36,8 +45,8 @@
             android:layout_marginTop="32dp"
             android:elevation="8dp"
             android:fontFamily="@font/aldrich"
-            android:onClick="@{() -> gameViewModel.onContinueMBTNClick()}"
-            android:text="@string/_continue"
+            android:onClick="@{() -> gameViewModel.onTryAgainMBTNClick()}"
+            android:text="@string/try_again"
             android:textColor="@color/colorFour"
             app:backgroundTint="@color/colorOne"
             app:icon="@drawable/start"
@@ -57,7 +66,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="@font/aldrich"
-            android:onClick="@{() -> gameViewModel.onHomeMBTNClick()}"
+            android:onClick="@{() -> gameViewModel.onHome2MBTNClick()}"
             android:text="@string/home"
             android:textColor="@color/colorPrimaryDark"
             app:backgroundTint="@color/colorOne"
