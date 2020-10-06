@@ -16,16 +16,101 @@
         android:layout_height="match_parent"
         tools:context=".view.GameFragment">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/fragment_game_nextMBTN"
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@color/colorThree"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/aldrich"
+            android:text="@{String.valueOf(gameViewModel.score)}"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/aldrich"
+            android:text="@{String.valueOf(gameViewModel.catchableNumber)}"
+            android:textColor="@color/colorTwo"
+            android:textSize="40sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/aldrich"
+                    android:onClick="@{() -> gameViewModel.onFirstNumberMBTNClick()}"
+                    android:padding="8dp"
+                    android:text="@{String.valueOf(gameViewModel.numbers.get(0))}"
+                    android:textColor="@color/colorFour"
+                    android:textSize="32sp"
+                    app:rippleColor="@color/colorTwo" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/aldrich"
+                    android:onClick="@{() -> gameViewModel.onSecondNumberMBTNClick()}"
+                    android:padding="8dp"
+                    android:text="@{String.valueOf(gameViewModel.numbers.get(1))}"
+                    android:textColor="@color/colorFour"
+                    android:textSize="32sp"
+                    app:rippleColor="@color/colorTwo" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/aldrich"
+                    android:onClick="@{() -> gameViewModel.onThirdNumberMBTNClick()}"
+                    android:padding="8dp"
+                    android:text="@{String.valueOf(gameViewModel.numbers.get(2))}"
+                    android:textColor="@color/colorFour"
+                    android:textSize="32sp"
+                    app:rippleColor="@color/colorTwo" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="@font/aldrich"
+                    android:onClick="@{() -> gameViewModel.onFourthNumberMBTNClick()}"
+                    android:padding="8dp"
+                    android:text="@{String.valueOf(gameViewModel.numbers.get(3))}"
+                    android:textColor="@color/colorFour"
+                    android:textSize="32sp"
+                    app:rippleColor="@color/colorTwo" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

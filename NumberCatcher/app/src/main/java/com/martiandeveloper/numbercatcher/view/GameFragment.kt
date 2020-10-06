@@ -3,7 +3,6 @@ package com.martiandeveloper.numbercatcher.view
 import android.app.AlertDialog
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +17,6 @@ import com.martiandeveloper.numbercatcher.R
 import com.martiandeveloper.numbercatcher.databinding.DialogPauseBinding
 import com.martiandeveloper.numbercatcher.databinding.FragmentGameBinding
 import com.martiandeveloper.numbercatcher.viewmodel.GameViewModel
-import kotlinx.android.synthetic.main.fragment_game.*
 import timber.log.Timber
 
 class GameFragment : Fragment() {
@@ -52,19 +50,6 @@ class GameFragment : Fragment() {
         mediaPlayer = MediaPlayer.create(context, R.raw.music)
         setMusic()
         observe()
-
-        gameViewModel.setCatchableNumber(6)
-
-        Log.d("Murad","Catchable number: ${gameViewModel.catchableNumber.value}")
-
-        generateNumbers()
-
-        fragment_game_nextMBTN.setOnClickListener {
-            generateCatchableNumber()
-            Log.d("Murad","Catchable number: ${gameViewModel.catchableNumber.value}")
-
-            generateNumbers()
-        }
     }
 
     private fun getViewModel(): GameViewModel {
@@ -101,6 +86,66 @@ class GameFragment : Fragment() {
                 pauseDialog.dismiss()
                 navigate(GameFragmentDirections.actionGameFragmentToHomeFragment())
                 gameViewModel.onHomeMBTNClickComplete()
+            }
+        })
+
+        gameViewModel.eventFirstNumberMBTNClick.observe(viewLifecycleOwner, {
+            if (it) {
+                if (gameViewModel.numbers.value!![0] == gameViewModel.catchableNumber.value) {
+                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
+                    gameViewModel.increaseScore()
+                } else {
+                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                }
+
+                gameViewModel.generateCatchableNumber()
+                gameViewModel.generateNumbers()
+                gameViewModel.onFirstNumberMBTNClickComplete()
+            }
+        })
+
+        gameViewModel.eventSecondNumberMBTNClick.observe(viewLifecycleOwner, {
+            if (it) {
+                if (gameViewModel.numbers.value!![1] == gameViewModel.catchableNumber.value) {
+                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
+                    gameViewModel.increaseScore()
+                } else {
+                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                }
+
+                gameViewModel.generateCatchableNumber()
+                gameViewModel.generateNumbers()
+                gameViewModel.onSecondNumberMBTNClickComplete()
+            }
+        })
+
+        gameViewModel.eventThirdNumberMBTNClick.observe(viewLifecycleOwner, {
+            if (it) {
+                if (gameViewModel.numbers.value!![2] == gameViewModel.catchableNumber.value) {
+                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
+                    gameViewModel.increaseScore()
+                } else {
+                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                }
+
+                gameViewModel.generateCatchableNumber()
+                gameViewModel.generateNumbers()
+                gameViewModel.onThirdNumberMBTNClickComplete()
+            }
+        })
+
+        gameViewModel.eventFourthNumberMBTNClick.observe(viewLifecycleOwner, {
+            if (it) {
+                if (gameViewModel.numbers.value!![3] == gameViewModel.catchableNumber.value) {
+                    Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
+                    gameViewModel.increaseScore()
+                } else {
+                    Toast.makeText(context, "Wrong", Toast.LENGTH_SHORT).show()
+                }
+
+                gameViewModel.generateCatchableNumber()
+                gameViewModel.generateNumbers()
+                gameViewModel.onFourthNumberMBTNClickComplete()
             }
         })
     }
@@ -143,39 +188,6 @@ class GameFragment : Fragment() {
         pauseDialog.setCanceledOnTouchOutside(false)
         pauseDialog.setCancelable(false)
         pauseDialog.show()
-    }
-
-    private fun generateCatchableNumber() {
-        val start = gameViewModel.catchableNumber.value!!.plus(8)
-        val end = gameViewModel.catchableNumber.value!!.plus(8).plus(16)
-        gameViewModel.setCatchableNumber((start..end).random())
-    }
-
-    private fun generateNumbers(){
-        val start = gameViewModel.catchableNumber.value!!.minus(8)
-        val end = gameViewModel.catchableNumber.value!!.plus(8)
-
-        val list = ArrayList<Int>()
-        list.add(gameViewModel.catchableNumber.value!!)
-
-        for(i in 0 until 3){
-            var random = (start..end).random()
-
-            while (list.contains(random)){
-                random = (start..end).random()
-            }
-
-            if(!list.contains(random)) {
-                list.add(random)
-            }
-
-        }
-
-        list.shuffle()
-
-        for(i in 0 until list.size){
-            Log.d("Murad","List: ${list[i]}")
-        }
     }
 
 }
