@@ -58,9 +58,13 @@ class GameViewModel : ViewModel() {
     val eventHome2MBTNClick: LiveData<Boolean>
         get() = _eventHome2MBTNClick
 
+    private var _progress = MutableLiveData<Int>()
+    val progress: LiveData<Int>
+        get() = _progress
+
 
     init {
-        _catchableNumber.value = 6
+        _catchableNumber.value = 9
 
         generateNumbers()
 
@@ -177,6 +181,10 @@ class GameViewModel : ViewModel() {
 
     fun onHome2MBTNClickComplete() {
         _eventHome2MBTNClick.value = false
+    }
+
+    fun setProgress(ms: Int) {
+        _progress.value = ms
     }
 
 }

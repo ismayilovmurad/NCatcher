@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,8 @@ class GameFragment : Fragment() {
     private lateinit var interstitialAd: InterstitialAd
 
     private lateinit var clickMediaPlayer: MediaPlayer
+
+    private lateinit var countDownTimer: CountDownTimer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,6 +84,8 @@ class GameFragment : Fragment() {
         clickMediaPlayer = MediaPlayer.create(context, R.raw.click)
 
         setClick()
+
+        startTimer()
     }
 
     private fun getViewModel(): GameViewModel {
@@ -122,6 +127,8 @@ class GameFragment : Fragment() {
                 musicMediaPlayer.start()
 
                 pauseDialog.dismiss()
+
+                startTimer()
 
                 gameViewModel.onContinueMBTNClickComplete()
             }
@@ -206,7 +213,15 @@ class GameFragment : Fragment() {
 
             gameViewModel.generateCatchableNumber()
             gameViewModel.generateNumbers()
+
+            countDownTimer.cancel()
+
+            gameViewModel.setProgress(5000)
+
+            startTimer()
         } else {
+            countDownTimer.cancel()
+
             if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
                 saveScore()
             }
@@ -233,6 +248,10 @@ class GameFragment : Fragment() {
         musicMediaPlayer.pause()
 
         gameViewModel.setCurrentPosition(musicMediaPlayer.currentPosition)
+
+        countDownTimer.cancel()
+
+        gameViewModel.setProgress(5000)
     }
 
     override fun onResume() {
@@ -242,6 +261,8 @@ class GameFragment : Fragment() {
             musicMediaPlayer.start()
         } else {
             if (!pauseDialog.isShowing && !gameOverDialog.isShowing) {
+                countDownTimer.cancel()
+
                 showPauseDialog()
             }
         }
@@ -295,4 +316,29 @@ class GameFragment : Fragment() {
         }
 
     }
+
+    private fun startTimer() {
+
+        countDownTimer = object : CountDownTimer(5000, 1) {
+
+            override fun onTick(leftTimeInMilliseconds: Long) {
+                gameViewModel.setProgress(leftTimeInMilliseconds.toInt())
+            }
+
+            override fun onFinish() {
+                countDownTimer.cancel()
+
+                if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
+                    saveScore()
+                }
+
+                showGameOverDialog()
+
+                musicMediaPlayer.pause()
+            }
+
+        }.start()
+
+    }
+
 }

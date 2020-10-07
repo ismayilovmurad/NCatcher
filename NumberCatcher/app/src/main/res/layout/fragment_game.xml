@@ -17,6 +17,7 @@
         tools:context=".view.GameFragment">
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/fragment_game_scoreMTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -27,6 +28,18 @@
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="8dp"
+            android:indeterminate="false"
+            android:max="5000"
+            android:progress="@{gameViewModel.progress}"
+            android:progressDrawable="@drawable/background_progressbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fragment_game_scoreMTV" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
