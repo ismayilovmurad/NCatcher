@@ -16,7 +16,7 @@ import com.martiandeveloper.numbercatcher.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var fragmentHomeBinding: FragmentHomeBinding
 
     private lateinit var homeViewModel: HomeViewModel
 
@@ -24,9 +24,9 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding =
+        fragmentHomeBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-        return binding.root
+        return fragmentHomeBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,31 +36,37 @@ class HomeFragment : Fragment() {
 
     private fun initUI() {
         homeViewModel = getViewModel()
-        binding.homeViewModel = homeViewModel
-        binding.lifecycleOwner = this
+
+        fragmentHomeBinding.homeViewModel = homeViewModel
+        fragmentHomeBinding.lifecycleOwner = this
+
         observe()
     }
 
     private fun getViewModel(): HomeViewModel {
+
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
                 return HomeViewModel() as T
             }
         })[HomeViewModel::class.java]
+
     }
 
     private fun observe() {
+
         homeViewModel.eventStartMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
                 navigate(HomeFragmentDirections.actionHomeFragmentToGameFragment())
+                homeViewModel.onStartMBTNClickComplete()
             }
         })
+
     }
 
     private fun navigate(navDirections: NavDirections) {
         view?.let { Navigation.findNavController(it).navigate(navDirections) }
-        homeViewModel.onStartMBTNClickComplete()
     }
 
 }

@@ -61,10 +61,14 @@ class GameViewModel : ViewModel() {
 
     init {
         _catchableNumber.value = 6
+
         generateNumbers()
+
         _score.value = 0
+
         _bestScore.value = 0
     }
+
 
     fun onContinueMBTNClick() {
         _eventContinueMBTNClick.value = true
@@ -93,6 +97,7 @@ class GameViewModel : ViewModel() {
     }
 
     fun generateNumbers() {
+
         val start = catchableNumber.value!!.minus(8)
         val end = catchableNumber.value!!.plus(8)
 
@@ -115,6 +120,7 @@ class GameViewModel : ViewModel() {
         list.shuffle()
 
         _numbers.value = list
+
     }
 
     fun onFirstNumberMBTNClick() {
@@ -153,7 +159,7 @@ class GameViewModel : ViewModel() {
         _score.value = _score.value!!.plus(1)
     }
 
-    fun setBestScore(score:Int){
+    fun setBestScore(score: Int) {
         _bestScore.value = score
     }
 
@@ -172,4 +178,5 @@ class GameViewModel : ViewModel() {
     fun onHome2MBTNClickComplete() {
         _eventHome2MBTNClick.value = false
     }
+
 }

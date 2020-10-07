@@ -15,6 +15,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.martiandeveloper.numbercatcher.R
 import com.martiandeveloper.numbercatcher.databinding.DialogGameOverBinding
 import com.martiandeveloper.numbercatcher.databinding.DialogPauseBinding
@@ -26,23 +29,27 @@ import timber.log.Timber
 
 class GameFragment : Fragment() {
 
-    private lateinit var mediaPlayer: MediaPlayer
-
-    private lateinit var pauseDialog: AlertDialog
-
-    private lateinit var mainBinding: FragmentGameBinding
+    private lateinit var fragmentGameBinding: FragmentGameBinding
 
     private lateinit var gameViewModel: GameViewModel
 
+    private lateinit var musicMediaPlayer: MediaPlayer
+
     private lateinit var gameOverDialog: AlertDialog
+
+    private lateinit var pauseDialog: AlertDialog
+
+    private lateinit var interstitialAd: InterstitialAd
+
+    private lateinit var clickMediaPlayer: MediaPlayer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mainBinding =
+        fragmentGameBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_game, container, false)
-        return mainBinding.root
+        return fragmentGameBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,41 +59,70 @@ class GameFragment : Fragment() {
 
     private fun initUI() {
         gameViewModel = getViewModel()
-        mainBinding.gameViewModel = gameViewModel
-        mainBinding.lifecycleOwner = this
-        mediaPlayer = MediaPlayer.create(context, R.raw.music)
-        setMusic()
-        observe()
-        getBestScore()
-        pauseDialog = AlertDialog.Builder(context).create()
+
+        fragmentGameBinding.gameViewModel = gameViewModel
+        fragmentGameBinding.lifecycleOwner = this
+
+        musicMediaPlayer = MediaPlayer.create(context, R.raw.music)
+
         gameOverDialog = AlertDialog.Builder(context).create()
+        pauseDialog = AlertDialog.Builder(context).create()
+
+        getBestScore()
+
+        setMusic()
+
+        observe()
+
+        interstitialAd = InterstitialAd(context)
+
+        setAds()
+
+        clickMediaPlayer = MediaPlayer.create(context, R.raw.click)
+
+        setClick()
     }
 
     private fun getViewModel(): GameViewModel {
+
         return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
                 return GameViewModel() as T
             }
         })[GameViewModel::class.java]
+
+    }
+
+    private fun getBestScore() {
+
+        val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences(
+            SCORE_SHARED_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
+        gameViewModel.setBestScore(sharedPreferences.getInt(SCORE_KEY, 0))
+
     }
 
     private fun setMusic() {
+
         try {
-            mediaPlayer.isLooping = true
-            mediaPlayer.prepare()
+            musicMediaPlayer.isLooping = true
+            musicMediaPlayer.prepare()
         } catch (e: Exception) {
             Timber.e(e.localizedMessage)
         }
+
     }
 
     private fun observe() {
         gameViewModel.eventContinueMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
-                mediaPlayer.seekTo(gameViewModel.currentPosition.value!!)
-                mediaPlayer.start()
+                musicMediaPlayer.seekTo(gameViewModel.currentPosition.value!!)
+                musicMediaPlayer.start()
 
                 pauseDialog.dismiss()
+
                 gameViewModel.onContinueMBTNClickComplete()
             }
         })
@@ -94,27 +130,16 @@ class GameFragment : Fragment() {
         gameViewModel.eventHomeMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
                 pauseDialog.dismiss()
+
                 navigate(GameFragmentDirections.actionGameFragmentToHomeFragment())
+
                 gameViewModel.onHomeMBTNClickComplete()
             }
         })
 
         gameViewModel.eventFirstNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
-                if (gameViewModel.numbers.value!![0] == gameViewModel.catchableNumber.value) {
-                    gameViewModel.increaseScore()
-
-                    gameViewModel.generateCatchableNumber()
-                    gameViewModel.generateNumbers()
-                } else {
-                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
-                        saveScore()
-                    }
-
-                    showGameOverDialog()
-
-                    mediaPlayer.pause()
-                }
+                handleNumberClick(0)
 
                 gameViewModel.onFirstNumberMBTNClickComplete()
             }
@@ -122,20 +147,7 @@ class GameFragment : Fragment() {
 
         gameViewModel.eventSecondNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
-                if (gameViewModel.numbers.value!![1] == gameViewModel.catchableNumber.value) {
-                    gameViewModel.increaseScore()
-
-                    gameViewModel.generateCatchableNumber()
-                    gameViewModel.generateNumbers()
-                } else {
-                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
-                        saveScore()
-                    }
-
-                    showGameOverDialog()
-
-                    mediaPlayer.pause()
-                }
+                handleNumberClick(1)
 
                 gameViewModel.onSecondNumberMBTNClickComplete()
             }
@@ -143,20 +155,7 @@ class GameFragment : Fragment() {
 
         gameViewModel.eventThirdNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
-                if (gameViewModel.numbers.value!![2] == gameViewModel.catchableNumber.value) {
-                    gameViewModel.increaseScore()
-
-                    gameViewModel.generateCatchableNumber()
-                    gameViewModel.generateNumbers()
-                } else {
-                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
-                        saveScore()
-                    }
-
-                    showGameOverDialog()
-
-                    mediaPlayer.pause()
-                }
+                handleNumberClick(2)
 
                 gameViewModel.onThirdNumberMBTNClickComplete()
             }
@@ -164,20 +163,7 @@ class GameFragment : Fragment() {
 
         gameViewModel.eventFourthNumberMBTNClick.observe(viewLifecycleOwner, {
             if (it) {
-                if (gameViewModel.numbers.value!![3] == gameViewModel.catchableNumber.value) {
-                    gameViewModel.increaseScore()
-
-                    gameViewModel.generateCatchableNumber()
-                    gameViewModel.generateNumbers()
-                } else {
-                    if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
-                        saveScore()
-                    }
-
-                    showGameOverDialog()
-
-                    mediaPlayer.pause()
-                }
+                handleNumberClick(3)
 
                 gameViewModel.onFourthNumberMBTNClickComplete()
             }
@@ -190,24 +176,45 @@ class GameFragment : Fragment() {
                 navigate(GameFragmentDirections.actionGameFragmentSelf())
 
                 gameViewModel.onTryAgainMBTNClickComplete()
+
+                if (interstitialAd.isLoaded) {
+                    interstitialAd.show()
+                }
             }
         })
 
         gameViewModel.eventHome2MBTNClick.observe(viewLifecycleOwner, {
             if (it) {
                 gameOverDialog.dismiss()
+
                 navigate(GameFragmentDirections.actionGameFragmentToHomeFragment())
+
                 gameViewModel.onHome2MBTNClickComplete()
             }
         })
     }
 
-    private fun getBestScore() {
-        val sharedPreferences: SharedPreferences = requireContext().getSharedPreferences(
-            SCORE_SHARED_PREFERENCES,
-            Context.MODE_PRIVATE
-        )
-        gameViewModel.setBestScore(sharedPreferences.getInt(SCORE_KEY, 0))
+    private fun navigate(navDirections: NavDirections) {
+        view?.let { Navigation.findNavController(it).navigate(navDirections) }
+    }
+
+    private fun handleNumberClick(index: Int) {
+        clickMediaPlayer.start()
+
+        if (gameViewModel.numbers.value!![index] == gameViewModel.catchableNumber.value) {
+            gameViewModel.increaseScore()
+
+            gameViewModel.generateCatchableNumber()
+            gameViewModel.generateNumbers()
+        } else {
+            if (gameViewModel.score.value!! > gameViewModel.bestScore.value!!) {
+                saveScore()
+            }
+
+            showGameOverDialog()
+
+            musicMediaPlayer.pause()
+        }
     }
 
     private fun saveScore() {
@@ -220,24 +227,21 @@ class GameFragment : Fragment() {
         editor.apply()
     }
 
-    private fun navigate(navDirections: NavDirections) {
-        view?.let { Navigation.findNavController(it).navigate(navDirections) }
-    }
-
     override fun onPause() {
         super.onPause()
 
-        mediaPlayer.pause()
-        gameViewModel.setCurrentPosition(mediaPlayer.currentPosition)
+        musicMediaPlayer.pause()
+
+        gameViewModel.setCurrentPosition(musicMediaPlayer.currentPosition)
     }
 
     override fun onResume() {
         super.onResume()
 
         if (gameViewModel.currentPosition.value == null) {
-            mediaPlayer.start()
+            musicMediaPlayer.start()
         } else {
-            if(!pauseDialog.isShowing && !gameOverDialog.isShowing){
+            if (!pauseDialog.isShowing && !gameOverDialog.isShowing) {
                 showPauseDialog()
             }
         }
@@ -267,4 +271,28 @@ class GameFragment : Fragment() {
         gameOverDialog.show()
     }
 
+    private fun setAds() {
+        interstitialAd.adUnitId = getString(R.string.main_interstitial)
+
+        val interstitialAdRequest = AdRequest.Builder().build()
+        interstitialAd.loadAd(interstitialAdRequest)
+
+        interstitialAd.adListener = object : AdListener() {
+            override fun onAdClosed() {
+                super.onAdClosed()
+                interstitialAd.loadAd(interstitialAdRequest)
+            }
+        }
+
+    }
+
+    private fun setClick() {
+
+        try {
+            clickMediaPlayer.prepare()
+        } catch (e: Exception) {
+            Timber.e(e.localizedMessage)
+        }
+
+    }
 }
