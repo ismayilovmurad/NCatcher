@@ -216,7 +216,7 @@ class GameFragment : Fragment() {
 
             countDownTimer.cancel()
 
-            gameViewModel.setProgress(5000)
+            gameViewModel.setProgress(3000)
 
             startTimer()
         } else {
@@ -251,7 +251,7 @@ class GameFragment : Fragment() {
 
         countDownTimer.cancel()
 
-        gameViewModel.setProgress(5000)
+        gameViewModel.setProgress(3000)
     }
 
     override fun onResume() {
@@ -319,7 +319,7 @@ class GameFragment : Fragment() {
 
     private fun startTimer() {
 
-        countDownTimer = object : CountDownTimer(5000, 1) {
+        countDownTimer = object : CountDownTimer(3000, 1) {
 
             override fun onTick(leftTimeInMilliseconds: Long) {
                 gameViewModel.setProgress(leftTimeInMilliseconds.toInt())

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary">#1A1A1D</color>
     <color name="colorPrimaryDark">#C20ED5</color>
     <color name="colorAccent">#FAFAFB</color>
     <color name="colorOne">#801A1A1D</color>
     <color name="colorTwo">#0ED8C4</color>
-    <color name="colorThree">#D8C40E</color>
+    <color name="colorThree" tools:ignore="UnusedResources">#D8C40E</color>
     <color name="colorFour">#0ED85F</color>
 </resources>

@@ -23,7 +23,6 @@ import com.martiandeveloper.numbercatcher.utils.SCORE_SHARED_PREFERENCES
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
-
 class MainActivity : AppCompatActivity() {
 
     private var appUpdateManager: AppUpdateManager? = null
